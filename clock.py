@@ -16,6 +16,7 @@ class Clock:
     def update(self):
         t = datetime.datetime.now().__str__()[11:16]
         if self.current_time_string is None:
+            self.matrix.set_cursor(1, 0)
             self.current_time_string = t
             self.matrix.write(t, self.font)
             return
@@ -24,7 +25,7 @@ class Clock:
             roll_indices = [i for i, (new_c, old_c) in enumerate(zip(t, self.current_time_string)) if new_c != old_c]
             new_letters = []
             old_letters = []
-            x = 0
+            x = 1
             y = 0
             for i, (new_c, old_c) in enumerate(zip(t, self.current_time_string)):
                 new_c_m = self.font[new_c]
