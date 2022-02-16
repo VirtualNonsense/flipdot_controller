@@ -106,9 +106,9 @@ class FlipDotMatrix:
                     if i_y + y < self.height and i_x + x < self.width:
                         self.matrix[i_y + y, i_x + x] = other_matrix[i_y, i_x]
 
-    def write(self, string: str):
+    def write(self, string: str, font: Dict[str, np.ndarray]):
         for char in string:
-            c = letter[char]
+            c = font[char]
             self.matrix_write(c)
             self.cursor += [(c.shape[1] + 1), 0]
         self.set_cursor(0, 0)
