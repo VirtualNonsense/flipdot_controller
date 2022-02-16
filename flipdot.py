@@ -27,13 +27,13 @@ class Cursor:
             if self.allow_overflow:
                 self.__x = self.__max_x - 1 - (value % self.__max_x)
                 return
-            self.__x = 0
+            self.__x = value
             return
 
         if self.allow_overflow:
             self.__x = (value % self.__max_x)
             return
-        self.__x = self.__max_x - 1
+        self.__x = value
 
     @property
     def y(self):
@@ -45,13 +45,13 @@ class Cursor:
             if self.allow_overflow:
                 self.__y = self.__max_y - 1 - (value % self.__max_y)
                 return
-            self.__y = 0
+            self.__y = value
             return
 
         if self.allow_overflow:
             self.__y = (value % self.__max_y)
             return
-        self.__y = self.__max_y - 1
+        self.__y = value
 
     def __add__(self, other: List[int]):
         new = Cursor(self.x, self.y, self.__max_x, self.__max_y, self.allow_overflow)
