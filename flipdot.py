@@ -96,19 +96,21 @@ class FlipDotMatrix:
     def get_value(self, column: int, row: int) -> bool:
         return self.matrix[row, column]
 
+    def matrix_write(self, other_matrix):
+        x, y = self.cursor.to_tuple()
+        try:
+            self.matrix[y:y + other_matrix.shape[0], x:x + other_matrix.shape[1]] = other_matrix
+        except IndexError:
+            for i_y in range(other_matrix.shape[0]):
+                for i_x in range(other_matrix.shape[1]):
+                    if i_y + y < self.height and i_x + x < self.width:
+                        self.matrix[i_y + y, i_x + x] = other_matrix[i_y, i_x]
+
     def write(self, string: str):
         for char in string:
             c = letter[char]
-            x, y = self.cursor.to_tuple()
-            try:
-                self.matrix[y:y + c.shape[0], x:x + c.shape[1]] = c
-                self.cursor += [(c.shape[1] + 1), 0]
-            except IndexError:
-                for i_y in range(c.shape[0]):
-                    for i_x in range(c.shape[1]):
-                        if i_y + y < self.height and i_x + x < self.width:
-                            self.matrix[i_y + y, i_x + x] = c[i_y, i_x]
-
+            self.matrix_write(c)
+            self.cursor += [(c.shape[1] + 1), 0]
         self.set_cursor(0, 0)
         self.update_matrix()
 
