@@ -29,7 +29,7 @@ class Clock:
             for i, (new_c, old_c) in enumerate(zip(t, self.current_time_string)):
                 new_c_m = self.font[new_c]
                 old_c_m = self.font[old_c]
-                new_letters += [[x, -self.matrix.height - 1, new_c_m]]
+                new_letters += [[x, -self.matrix.height, new_c_m]]
                 old_letters += [[x, y, old_c_m]]
                 x += new_c_m.shape[1] + 1
 
