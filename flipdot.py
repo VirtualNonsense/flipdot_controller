@@ -25,7 +25,7 @@ class Cursor:
     def x(self, value: int):
         if value < 0:
             if self.allow_overflow:
-                self.__x = self.__max_x - (value % self.__max_x)
+                self.__x = self.__max_x - 1 - (value % self.__max_x)
                 return
             self.__x = 0
             return
@@ -43,7 +43,7 @@ class Cursor:
     def y(self, value: int):
         if value < 0:
             if self.allow_overflow:
-                self.__y = self.__max_y - (value % self.__max_y)
+                self.__y = self.__max_y - 1 - (value % self.__max_y)
                 return
             self.__y = 0
             return
