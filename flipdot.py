@@ -103,7 +103,7 @@ class FlipDotMatrix:
         except (IndexError, ValueError):
             for i_y in range(other_matrix.shape[0]):
                 for i_x in range(other_matrix.shape[1]):
-                    if i_y + y < self.height and i_x + x < self.width:
+                    if 0 < i_y + y < self.height and 0 < i_x + x < self.width:
                         self.matrix[i_y + y, i_x + x] = other_matrix[i_y, i_x]
 
     def write(self, string: str, font: Dict[str, np.ndarray]):
