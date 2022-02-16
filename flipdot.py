@@ -100,7 +100,7 @@ class FlipDotMatrix:
         x, y = self.cursor.to_tuple()
         try:
             self.matrix[y:y + other_matrix.shape[0], x:x + other_matrix.shape[1]] = other_matrix
-        except IndexError:
+        except (IndexError, ValueError):
             for i_y in range(other_matrix.shape[0]):
                 for i_x in range(other_matrix.shape[1]):
                     if i_y + y < self.height and i_x + x < self.width:
