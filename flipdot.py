@@ -1,5 +1,5 @@
 import socket
-from typing import List
+from typing import List, Dict
 
 import numpy as np
 
