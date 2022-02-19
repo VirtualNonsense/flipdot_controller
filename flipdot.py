@@ -3,8 +3,6 @@ from typing import List, Dict
 
 import numpy as np
 
-from letter import letter
-
 
 class Cursor:
     def __init__(self, x: int, y: int, x_max: int, y_max: int, allow_overflow: bool):

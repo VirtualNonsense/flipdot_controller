@@ -40,7 +40,6 @@ class Clock:
                 old_letters += [[x, y, old_c_m]]
                 x += new_c_m.shape[1] + 1
 
-            offset = 0
             for i, (old, new) in enumerate(zip(old_letters, new_letters)):
                 x, old_y, old_m = old
                 _, new_y, new_m = new
