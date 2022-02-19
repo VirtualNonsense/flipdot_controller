@@ -2,7 +2,7 @@ import datetime
 import time
 
 from flipdot import FlipDotMatrix
-from letter import letter
+from letter import letter, fat_letter
 
 
 class Clock:
@@ -11,6 +11,7 @@ class Clock:
         self.matrix.cursor.allow_overflow = False
         self.current_time_string = None
         self.font = letter
+        self.fat_font = fat_letter
         self.delay = .2
 
     def update(self):
@@ -29,8 +30,12 @@ class Clock:
             x = 1
             y = 0
             for i, (new_c, old_c) in enumerate(zip(t, self.current_time_string)):
-                new_c_m = self.font[new_c]
-                old_c_m = self.font[old_c]
+                if i > 1:
+                    new_c_m = self.font[new_c]
+                    old_c_m = self.font[old_c]
+                else:
+                    new_c_m = self.fat_font[new_c]
+                    old_c_m = self.fat_font[old_c]
                 new_letters += [[x, -self.matrix.height - self.matrix.height // 3, new_c_m]]
                 old_letters += [[x, y, old_c_m]]
                 x += new_c_m.shape[1] + 1
