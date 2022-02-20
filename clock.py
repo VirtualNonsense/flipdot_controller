@@ -1,13 +1,16 @@
 import datetime
 import time
 
+import numpy as np
+from scipy.ndimage import rotate
+
 from flipdot import FlipDotMatrix
 from letter import letter, fat_letter
 
 from typing import *
 
 
-class Clock:
+class DigitalClock:
     def __init__(self, matrix: FlipDotMatrix):
         self.matrix = matrix
         self.matrix.cursor.allow_overflow = False
@@ -71,3 +74,71 @@ class Clock:
                 self.matrix.matrix_write(new_m)
                 self.matrix.update_matrix()
             self.current_time_string = t
+
+
+class AnalogClock:
+    def __init__(self, matrix: FlipDotMatrix):
+        self.matrix = matrix
+        self.__minute = 0
+        self.__hour = 0
+        self.threshold = .35
+
+        self.border = np.array([
+            [0., 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+            [0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+            [0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
+            [0, 0, 1, 1, 0, 0, 0, 0, 0, 1, 1, 0, 0],
+            [0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
+        ], dtype=bool)
+
+        self.minute = np.array([
+            [0., 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ])
+
+        self.hour = np.array([
+            [0., 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        ])
+
+    def update(self):
+        t = datetime.datetime.now()
+        if t.hour % 5 != 0:
+            return
+        self.__minute = t.minute
+        self.__hour = t.hour
+        m_h = rotate(self.hour, -(self.__hour % 12 * 30), reshape=False)
+        m_m = rotate(self.minute, -(self.__minute // 5 * 30), reshape=False)
+        self.matrix.set_cursor(1, 1)
+        self.matrix.matrix_write((self.border + m_h > self.threshold) + m_m > self.threshold)
+        self.matrix.update_matrix()
