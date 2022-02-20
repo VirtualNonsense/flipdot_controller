@@ -4,6 +4,8 @@ import time
 from flipdot import FlipDotMatrix
 from letter import letter, fat_letter
 
+from typing import *
+
 
 class Clock:
     def __init__(self, matrix: FlipDotMatrix):
@@ -24,13 +26,23 @@ class Clock:
 
         if self.current_time_string != t:
             roll_indices = [i for i, (new_c, old_c) in enumerate(zip(t, self.current_time_string)) if new_c != old_c]
-            new_letters = []
-            old_letters = []
+            new_letters: List[Any] = []
+            old_letters: List[Any] = []
             clean_up = self.font[" "]
             x = 1
             y = 0
             for i, (new_c, old_c) in enumerate(zip(t, self.current_time_string)):
-                if i > 1:
+                if i == 0:
+                    if old_c == "0":
+                        old_c_m = self.fat_font[" "]
+                    else:
+                        old_c_m = self.fat_font[old_c]
+                    if new_c == "0":
+                        new_c_m = self.fat_font[" "]
+                    else:
+                        new_c_m = self.fat_font[old_c]
+
+                elif i > 1:
                     new_c_m = self.font[new_c]
                     old_c_m = self.font[old_c]
                 else:
@@ -39,7 +51,6 @@ class Clock:
                 new_letters += [[x, -self.matrix.height - self.matrix.height // 3, new_c_m]]
                 old_letters += [[x, y, old_c_m]]
                 x += new_c_m.shape[1] + 1
-
             for i, (old, new) in enumerate(zip(old_letters, new_letters)):
                 x, old_y, old_m = old
                 _, new_y, new_m = new
