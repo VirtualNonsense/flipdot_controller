@@ -14,19 +14,13 @@ class DigitalClock:
     def __init__(self, matrix: FlipDotMatrix):
         self.matrix = matrix
         self.matrix.cursor.allow_overflow = False
-        self.current_time_string = None
+        self.current_time_string = "      "
         self.font = letter
         self.fat_font = fat_letter
         self.delay = .2
 
     def update(self):
         t = datetime.datetime.now().__str__()[11:16]
-        if self.current_time_string is None:
-            self.matrix.set_cursor(1, 0)
-            self.current_time_string = t
-            self.matrix.write(t, self.font)
-            return
-
         if self.current_time_string != t:
             roll_indices = [i for i, (new_c, old_c) in enumerate(zip(t, self.current_time_string)) if new_c != old_c]
             new_letters: List[Any] = []
