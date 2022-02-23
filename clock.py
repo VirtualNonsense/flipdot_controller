@@ -14,10 +14,12 @@ class DigitalClock:
     def __init__(self, matrix: FlipDotMatrix):
         self.matrix = matrix
         self.matrix.cursor.allow_overflow = False
-        self.current_time_string = "      "
+        self.current_time_string = "  :  "
         self.font = letter
         self.fat_font = fat_letter
         self.delay = .2
+        self.matrix.set_cursor(1, 0)
+        matrix.write(self.current_time_string, letter)
 
     def update(self):
         t = datetime.datetime.now().__str__()[11:16]
@@ -48,13 +50,10 @@ class DigitalClock:
                 new_letters += [[x, -self.matrix.height - self.matrix.height // 3, new_c_m]]
                 old_letters += [[x, y, old_c_m]]
                 x += new_c_m.shape[1] + 1
-            for i, (old, new) in enumerate(zip(old_letters, new_letters)):
-                x, old_y, old_m = old
-                _, new_y, new_m = new
-                if i not in roll_indices:
-                    self.matrix.set_cursor(x, old_y)
-                    self.matrix.matrix_write(old_m)
-                    continue
+            roll_indices.reverse()
+            for index in roll_indices:
+                x, old_y, old_m = old_letters[index]
+                _, new_y, new_m = new_letters[index]
                 for offset in range(self.matrix.height + self.matrix.height // 3):
                     self.matrix.set_cursor(x, old_y + offset)
                     self.matrix.matrix_write(old_m)
@@ -75,7 +74,7 @@ class AnalogClock:
         self.matrix = matrix
         self.__minute = 0
         self.__hour = 0
-        self.threshold = .35
+        self.threshold = .15
 
         self.border = np.array([
             [0., 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0],
