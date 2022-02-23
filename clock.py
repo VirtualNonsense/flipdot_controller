@@ -43,7 +43,7 @@ class DigitalClock:
                     if new_c == "0":
                         new_c_m = self.fat_font[" "]
                     else:
-                        new_c_m = self.fat_font[old_c]
+                        new_c_m = self.fat_font[new_c]
 
                 elif i > 1:
                     new_c_m = self.font[new_c]
