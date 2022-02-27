@@ -22,7 +22,9 @@ class DigitalClock:
         matrix.write(self.current_time_string, letter)
 
     def update(self):
-        t = datetime.datetime.now().__str__()[11:16]
+        t = datetime.datetime.now()
+        do_animation = 7 < t.hour < 23
+        t = t.__str__()[11:16]
         if self.current_time_string != t:
             roll_indices = [i for i, (new_c, old_c) in enumerate(zip(t, self.current_time_string)) if new_c != old_c]
             new_letters: List[Any] = []
@@ -54,15 +56,16 @@ class DigitalClock:
             for index in roll_indices:
                 x, old_y, old_m = old_letters[index]
                 _, new_y, new_m = new_letters[index]
-                for offset in range(self.matrix.height + self.matrix.height // 3):
-                    self.matrix.set_cursor(x, old_y + offset)
-                    self.matrix.matrix_write(old_m)
-                    self.matrix.set_cursor(x, old_y + offset - old_m.shape[0])
-                    self.matrix.matrix_write(clean_up)
-                    self.matrix.set_cursor(x, new_y + offset)
-                    self.matrix.matrix_write(new_m)
-                    self.matrix.update_matrix()
-                    time.sleep(self.delay)
+                if do_animation:
+                    for offset in range(self.matrix.height + self.matrix.height // 3):
+                        self.matrix.set_cursor(x, old_y + offset)
+                        self.matrix.matrix_write(old_m)
+                        self.matrix.set_cursor(x, old_y + offset - old_m.shape[0])
+                        self.matrix.matrix_write(clean_up)
+                        self.matrix.set_cursor(x, new_y + offset)
+                        self.matrix.matrix_write(new_m)
+                        self.matrix.update_matrix()
+                        time.sleep(self.delay)
                 self.matrix.set_cursor(x, old_y)
                 self.matrix.matrix_write(new_m)
                 self.matrix.update_matrix()
