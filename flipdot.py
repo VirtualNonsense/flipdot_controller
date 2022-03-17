@@ -91,6 +91,14 @@ class FlipDotMatrix:
         if update:
             self.update_matrix()
 
+    def set_all(self, value: bool, update: False):
+        if value:
+            self.matrix = np.ones(shape=self.matrix.shape, dtype=bool)
+        else:
+            self.matrix = np.zeros(shape=self.matrix.shape, dtype=bool)
+        if update:
+            self.update_matrix()
+
     def get_value(self, column: int, row: int) -> bool:
         return self.matrix[row, column]
 
